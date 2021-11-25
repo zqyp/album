@@ -1,8 +1,8 @@
 package com.zp.springcloud.controller;
 
 
-import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import com.zp.springcloud.entity.po.Payment;
 import com.zp.springcloud.entity.vo.CommonResult;
 import com.zp.springcloud.service.PaymentService;
@@ -17,7 +17,6 @@ import javax.annotation.Resource;
  * @author ZP
  */
 
-@DefaultProperties(defaultFallback = "payment_Global_FallbackMethod")
 @RestController
 @Slf4j
 public class OrderController {
@@ -30,14 +29,18 @@ public class OrderController {
         return paymentService.getPaymentById(id);
     }
 
+    @HystrixCommand(fallbackMethod = "paymentInfoTimeOutHystrix",
+            commandProperties = {
+                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "20000" )
+    })
     @GetMapping("/consumer/timeout/{id}")
-    public CommonResult<Payment> paymentInfoTimeOut(@PathVariable("id") Long id){
+    public CommonResult<Payment> paymentInfoTimeOut(@PathVariable("id") Long id) {
+        log.info("enter paymentInfoTimeOut "+ Thread.currentThread().getName());
         return paymentService.getPaymentTimeoutById(id);
     }
 
-    public CommonResult<Payment> payment_Global_FallbackMethod()
-    {
-        return new CommonResult<>(444, "Global异常处理信息，请稍后再试，/(ㄒoㄒ)/~~");
+    public CommonResult<Payment> paymentInfoTimeOutHystrix(@PathVariable("id") Long id) {
+        return new CommonResult<>(444,"没有对应记录,-- @paymentInfoTimeOutHystrix-- 查询ID: "+id,null);
     }
 
 }

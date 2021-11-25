@@ -14,9 +14,38 @@ eureka:
     service-url:
      # 单机
      defaultZone: http://localhost:7001/eureka
+     # 集群
+     #defaultZone: http://ip1:port1/eureka, http://ip2:port2/eureka  # 集群版
+  instance:
+    #指示 eureka 客户端需要多长时间（以秒为单位）向 eureka 服务器发送心跳以表明它仍然活着
+    lease-renewal-interval-in-seconds: 5
+    #指示 eureka 服务器自收到最后一次心跳后等待的时间（以秒为单位），然后才能从其视图中删除此实例，并通过禁止流向此实例的流量
+    lease-expiration-duration-in-seconds: 15
+
+ribbon:
+  #指的是建立连接所用的时间，适用于网络状况正常的情况下，两端连接所用的时间
+  ConnectTimeout: 1000
+  #指的是建立连接后从服务器读取到可用资源所用的时间
+  ReadTimeout: 5000
 
 
 feign:
   hystrix:
     enabled: true
 
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 10000 # hystrix 线程执行的超时时间，应该是要大于ribbon，因为在超时的最后才发生降级
+
+##在进行压测的时候，出现了异常:"could not be queued for execution and no fallback available.
+##"以及"Rejected command because thread-pool queueSize is at rejection threshold"
+  threadpool:
+    default:
+      coreSize: 2 #并发执行的最大线程数，默认10
+      maximumSize: 2
+      maxQueueSize: -1 #BlockingQueue的最大队列数
+      queueSizeRejectionThreshold: -1 #即使maxQueueSize没有达到，达到queueSizeRejectionThreshold该值后，请求也会被拒绝

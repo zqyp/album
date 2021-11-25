@@ -1,5 +1,7 @@
 package com.zp.springcloud.controller;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import com.zp.springcloud.entity.po.Payment;
 import com.zp.springcloud.entity.vo.CommonResult;
 import com.zp.springcloud.service.PaymentService;
@@ -8,10 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.*;
-
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -56,6 +56,14 @@ public class PaymentController {
     }
 
 
+    @HystrixCommand(fallbackMethod = "getPaymentTimeoutByIdHystrix", commandProperties = {
+            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5000" ),
+            @HystrixProperty(name = "circuitBreaker.enabled", value = "true"),
+            @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "20"),
+            @HystrixProperty(name = "circuitBreaker.sleepWindowInMilliseconds", value = "5000"),
+            @HystrixProperty(name = "circuitBreaker.errorThresholdPercentage", value = "50"),
+
+    })
     @GetMapping("/payment/timeout/{id}")
     public CommonResult<Payment> getPaymentTimeoutById(@PathVariable("id") Long id) {
         Payment payment = paymentService.getPaymentTimeoutById(id);
@@ -67,6 +75,13 @@ public class PaymentController {
             return new CommonResult<>(444,"没有对应记录,查询ID: "+id,null);
         }
     }
+
+    public CommonResult<Payment> getPaymentTimeoutByIdHystrix(@PathVariable("id") Long id) {
+        //log.error("getPaymentTimeoutByIdHystrix 触发！");
+        return new CommonResult<>(444,"没有对应记录,-- @getPaymentTimeoutByIdHystrix-- 查询ID: "+id,null);
+    }
+
+
 
     @GetMapping("/payment/discovery")
     public Object discovery() {

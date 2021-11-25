@@ -17,6 +17,9 @@
         <module>cloud-eureka-server-7001</module>
         <module>cloud-gateway-gateway9527</module>
         <module>cloud-provider-payment-8001</module>
+        <module>cloudalibaba-provider-payment9001</module>
+        <module>cloudalibaba-consumer-order81</module>
+        <module>cloudalibaba-config-nacosclient3377</module>
     </modules>
 
 
@@ -52,7 +55,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <!--spring cloud alibaba 2.1.0.RELEASE-->
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
