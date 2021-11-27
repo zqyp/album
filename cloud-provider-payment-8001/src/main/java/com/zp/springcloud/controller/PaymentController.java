@@ -57,7 +57,7 @@ public class PaymentController {
 
 
     @HystrixCommand(fallbackMethod = "getPaymentTimeoutByIdHystrix", commandProperties = {
-            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5000" ),
+            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "10000" ),
             @HystrixProperty(name = "circuitBreaker.enabled", value = "true"),
             @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "20"),
             @HystrixProperty(name = "circuitBreaker.sleepWindowInMilliseconds", value = "5000"),
@@ -94,6 +94,12 @@ public class PaymentController {
         );
 
         return this.discoveryClient;
+    }
+
+
+    @GetMapping(value = "/lb/lb")
+    public String getPaymentLb() {
+        return serverPort;
     }
 
 }
