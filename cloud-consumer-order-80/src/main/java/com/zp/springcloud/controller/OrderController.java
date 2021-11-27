@@ -29,6 +29,12 @@ public class OrderController {
         return paymentService.getPaymentById(id);
     }
 
+
+    @GetMapping("/payment/{id}")
+    public CommonResult<Payment> paymentInfoOk2(@PathVariable("id") Long id){
+        return new CommonResult<>(444,"9527进入80 "+id,null);
+    }
+
     @HystrixCommand(fallbackMethod = "paymentInfoTimeOutHystrix",
             commandProperties = {
                     @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "20000" )
