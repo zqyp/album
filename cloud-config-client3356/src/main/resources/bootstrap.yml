@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: config-client3356
+  cloud:
+    config:
+      label: main
+      name: config
+      profile: dev
+      uri: http://localhost:3344
+      fail-fast: true #在某些情况下，如果服务无法连接到配置服务器，则可能希望启动服务失败。根据情况开启，
+      #因为Config Server和 Config Client有严格的启动顺序，Config Server要先启动。
+
+  #rabbitMQ配置
+  rabbitmq:
+    host: 192.168.56.105
+    port: 5672
+    username: guest
+    password: guest
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

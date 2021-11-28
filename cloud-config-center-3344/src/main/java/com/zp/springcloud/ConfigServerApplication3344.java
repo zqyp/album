@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.config.server.EnableConfigServer;
 
 /**
+ * config server 要先于 config client启动
  * @author ZP
  */
 @SpringBootApplication

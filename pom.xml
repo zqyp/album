@@ -20,6 +20,9 @@
         <module>cloudalibaba-provider-payment9001</module>
         <module>cloudalibaba-consumer-order81</module>
         <module>cloudalibaba-config-nacosclient3377</module>
+        <module>cloud-config-client3355</module>
+        <module>cloud-config-client3356</module>
+        <module>cloud-eureka-server7002</module>
     </modules>
 
 
